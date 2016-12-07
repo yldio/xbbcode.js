@@ -19,7 +19,7 @@ containing the mapping of BBCode tags to output, in the form of `plugins`
 described below:
 
     plugins   ::= { name : renderer }*
-    name      ::= string (must match /\w+/)
+    name      ::= string (must match /[A-Za-z0-9_-]+/)
     renderer  ::= string | function
 
 A string renderer consists of any text with the following optional placeholders:

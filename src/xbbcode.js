@@ -176,9 +176,9 @@
   // The attribute value concludes after the same quote (if any) is
   // re-encountered followed by a white-space character, ], or the string end.
   // (string end cannot occur when matching a full tag).
-  const RE_ATTRIBUTE = '\\s+(\\w+)=(' + RE_QUOTE + ')(.*?)\\2(?=\\s|\\]|$)';
+  const RE_ATTRIBUTE = '\\s+(\[A-Za-z0-9_-]+)=(' + RE_QUOTE + ')(.*?)\\2(?=\\s|\\/|\\]|$)';
   const RE_TAG  = '\\[(\\/?)' + // Match the [ and an optional /.
-                '(\\w+)' +      // The tag name has no white space.
+                '(\[A-Za-z0-9_-]+)' +      // The tag name has no white space.
                 '(?:' +
                   '=(' + RE_QUOTE + ')(.*?)\\3(?=\\])' + // =option
                   '|(\\s+(\\w+)=(' + RE_QUOTE + ')(.*?)\\7(?=\\s|\\]|$)+)' + // attributes
