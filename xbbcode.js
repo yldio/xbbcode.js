@@ -23,8 +23,13 @@ module.exports = (function() {
    * the render string may contain the placeholders {content}, {option}, {name},
    * or any attribute key.
    */
-  function XBBCode(tags) {
+  function XBBCode(tags, options) {
+    options = options || {};
+    if (options.fallback && typeof options.fallback !== 'function') {
+      throw new Error('Fallback must be a function')
+    }
     return {
+      fallback: options.fallback,
       tagEngine: tags,
       render: render,
     }
@@ -46,7 +51,7 @@ module.exports = (function() {
                 '\\]'; // match the final ].
 
   function render(text) {
-    return processTags(text, findTags(text), this.tagEngine);
+    return processTags(text, findTags(text), this.tagEngine, {fallback: this.fallback});
   }
 
   function findTags(text) {
@@ -79,8 +84,9 @@ module.exports = (function() {
     return attrs;
   };
 
-  function processTags(text, tags, tagEngine) {
+  function processTags(text, tags, tagEngine, options) {
     // Initialize tag counter.
+    var fallback = options.fallback;
     var openByName = {};
     for (var i in tags) {
       openByName[tags[i].name] = 0;
@@ -94,7 +100,10 @@ module.exports = (function() {
       parent = stack[stack.length-1];
       var tag = tags[i];
       var renderer = tagEngine[tag.name];
-      if (!renderer) continue;
+      if (!renderer) {
+        if (fallback) fallback(tag)
+        continue;
+      }
 
       // Append everything before this tag to the last open one.
       parent.content += text.substring(parent.offset, tag.start);
